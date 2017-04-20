@@ -39,7 +39,14 @@ $components = [
     "css"=>[
         [
             "title"=>"butstrap",
-            "href"=>"https://v4-alpha.getbootstrap.com/components/navbar/",
+            "link"=>"https://v4-alpha.getbootstrap.com/components/navbar/",
+        ]
+    ],
+    "js"=>[
+        [
+            "title"=>"jquery",
+            "link"=>"http://jquery.com/",
+            "href"=>"js/jquery-3.1.1.js"
         ]
     ]
 ];
@@ -86,7 +93,7 @@ $components = [
                 <h4><?= strtoupper($key)?></h4>
                 <ul>
                     <?php foreach ($value as $index => $item) { ?>
-                    <li><a href="<?=$item['href']?>"><?=$item['title']?></a></li>
+                    <li><a href="<?=$item['link']?>"><?=$item['title']?></a></li>
                     <?php } ?>
                 </ul>
                 <?php } ?>
