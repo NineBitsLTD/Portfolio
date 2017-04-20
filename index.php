@@ -23,28 +23,31 @@ $menu = [
         "icon"=>"fa-home",
         "title"=>"Main page - Home",
         "text"=>"Home",
+        "href"=>"",
     ],
     "projects"=>[
-        "icon"=>"fa-file-o",
+        "icon"=>"fa-file-code-o",
         "title"=>"Projects",
         "text"=>"Projects",
+        "href"=>"projects",
     ],
     "contacts"=>[
         "icon"=>"fa-phone",
-        "title"=>"Phone",
-        "text"=>"Phone",
+        "title"=>"Contacts",
+        "text"=>"Contacts",
+        "href"=>"contacts",
     ],
 ];
 $components = [
     "css"=>[
         [
-            "title"=>"butstrap",
+            "title"=>"Bootstrap",
             "link"=>"https://v4-alpha.getbootstrap.com/components/navbar/",
         ]
     ],
     "js"=>[
         [
-            "title"=>"jquery",
+            "title"=>"JQuery",
             "link"=>"http://jquery.com/",
             "href"=>"js/jquery-3.1.1.js"
         ]
@@ -57,6 +60,7 @@ $components = [
     <head>
         <title>NineBits - Portfolio</title>
         <link href="css/bootstrap.css" type="text/css" media="all" rel="stylesheet">
+        <link href="css/font-awesome.css" type="text/css" media="all" rel="stylesheet">
         <script src="js/jquery-3.1.1.js"></script>
         <script src="js/tether.min.js"></script>
         <script src="js/bootstrap.js"></script>
@@ -74,7 +78,7 @@ $components = [
                         <li class="nav-item" title="<?=(array_key_exists('title', $value))?$value['title']:""?>">
                             <a class="nav-link">
                                 <?php if(array_key_exists('icon', $value)){ ?>
-                                <i class="<?=$value['icon']?>"></i>
+                                <i class="fa <?=$value['icon']?>"></i>
                                 <?php } ?>
                                 <?php if(array_key_exists('text', $value)){ ?>
                                 <span><?=$value['text']?></span>
