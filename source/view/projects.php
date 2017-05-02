@@ -1,12 +1,9 @@
 <?php
-
-$root = "../";
-include '../source/config/main.php';
-
 function print_content(){ 
-    include '../source/config/projects.php';
+    global $projects;
     ?>
     <h1>Projects</h1>
+    <hr>
     <?php foreach ($projects as $type => $items) { ?>
     <article class="form-group">
         <h3><?=$type?></h3>
@@ -26,6 +23,6 @@ function print_content(){
     <?php } ?>
 <?php } 
 
-include '../source/view/main.php' 
+include 'source/view/base.php' 
 
 ?>
