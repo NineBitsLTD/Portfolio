@@ -4,7 +4,7 @@ function print_content(){ ?>
     <hr>
     <article>
         <h3>Used components:</h3>
-        <?php foreach ($GLOBALS['components'] as $key => $value) { ?>
+        <?php foreach (\Registry::$Data->Components as $key => $value) { ?>
         <h4><?= strtoupper($key)?></h4>
         <ul>
             <?php foreach ($value as $index => $item) { ?>

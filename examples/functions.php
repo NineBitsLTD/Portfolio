@@ -72,3 +72,5 @@ print_r(ClassB::test('foo'));
 print_r(call_user_func_array('test', array(1,2)));
 print_r(call_user_func_array(array(new ClassA(),'method'), array(3,4)));
 print_r(call_user_func_array($func, array(5,6)));
+
+
