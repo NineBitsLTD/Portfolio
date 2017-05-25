@@ -1,7 +1,9 @@
 <?php
 namespace Model;
 
-class Component extends \Core\Model{
-    public $TableName='component';
+class Component extends \DataBase\SourceProvider{
+    function __construct() {
+        parent::__construct('component');
+    }
 }
 

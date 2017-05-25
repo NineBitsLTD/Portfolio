@@ -24,9 +24,10 @@ namespace {
 
 namespace Registry {
     class Data{
-        public $BaseLink;
-        public $Brand;
-        public $Components;
-        public $Menu;
+        public $BaseLink='';
+        public $Brand='';
+        public $Components=[];
+        public $Menu=[];
+        public $Page='';
     }
 }

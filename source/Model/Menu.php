@@ -1,7 +1,9 @@
 <?php
 namespace Model;
 
-class Menu extends \Core\Model{
-    public $TableName='menu';
+class Menu extends \DataBase\SourceProvider{
+    function __construct() {
+        parent::__construct('menu');
+    }
 }
 

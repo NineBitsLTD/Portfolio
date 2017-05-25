@@ -1,27 +1,53 @@
 <?php
 function print_content(){ 
-    \Helper\HTML::AddFAQ('source/Model/faq.php');
-    include 'source/Model/faq.php'; 
+    $modelFaq = new \Model\Faq();
+    if(array_key_exists('email', $_POST) && $_POST['email']!='' && array_key_exists('message', $_POST) && $_POST['message']!=''){
+        $post = [
+            'firstname' => '',
+            'email' => $_POST['email'],
+            'message' => $_POST['message'],
+        ];
+        if(array_key_exists('firstname', $_POST)) $post['firstname'] = $_POST['firstname'];
+        $modelFaq->Set($post);
+    }
+    $offset = 0;
+    $limit = 2;
+    if(isset($_GET['offset'])) $offset = $_GET['offset'];
+    if(isset($_GET['limit'])) $limit = $_GET['limit'];
+    $total = $modelFaq->Clear()->Where("`parent_id` IS NULL")->GetTotal();
+    $faq = $modelFaq->Limit($offset,$limit)->Sort(['created_at'=>'desc'])->Get('id')->ClearLimit()->GetResult()->Rows;
+    foreach ($faq as $id=>$value) {
+        $faq[$id]['request'] = $modelFaq->ClearWhere()->Where("`parent_id`='{$value['id']}'")->Get('id')->GetResult()->Rows;
+    }
     ?>
     <h1>FAQ</h1>
     <hr>
     <article class="">
         <h3>List of questions and answers:</h3>
-    <?php krsort($faq); $i=0; foreach ($faq as $key => $value) { $i++; ?>
+    <?php foreach ($faq as $value) { ?>
         <div class="form-group form-control">
-            <label><?=$key?>: <b><?=$value['firstname']?></b> <i><?=$value['email']?></i></label>
+            <label><?=$value['created_at']?>: <b><?=$value['firstname']?></b> <i><?=$value['email']?></i></label>
             <hr>
             <?= htmlentities($value['message'])?>
-            <?php if(array_key_exists('request', $value) && is_array($value['request'])) foreach ($value['request'] as $date => $request) { ?>
+            <?php if(array_key_exists('request', $value) && is_array($value['request']))
+                    foreach ($value['request'] as $request) { ?>
             <br><br>
             <div class="form-group form-control">
-                <?=$date?>: <b><?=$request['firstname']?></b>
+                <?=$request['created_at']?>: <b><?=$request['firstname']?></b>
                 <hr>
                 <?=$request['message']?>
             </div>
             <?php } ?>
         </div>
-    <?php if($i>=3) break; } ?>
+    <?php } ?>
+        <div class="form-group">
+            <?php if(($offset-$limit)>=0){?>    
+            <a class="btn btn-secondary" href="<?=\Registry::$Data->BaseLink?>/<?=\Registry::$Data->Page?>?offset=<?=$offset-$limit?>">Prev</a>
+            <?php } ?>
+            <?php if($total>($offset+$limit)){?>
+            <a class="btn btn-secondary" href="<?=\Registry::$Data->BaseLink?>/<?=\Registry::$Data->Page?>?offset=<?=$offset+$limit?>">Next</a>
+            <?php } ?>
+        </div>
     </article>
     <article class="form-group">
         <h3>Write us:</h3>

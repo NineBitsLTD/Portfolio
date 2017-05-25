@@ -57,26 +57,4 @@ class HTML{
             <?php } ?>
         </ul>
     <?php }
-    /**
-     * Добавление поста в файл $filename
-     * 
-     * @param type $filename
-     */
-    static public function AddFAQ($filename){
-        if(array_key_exists('email', $_POST) && array_key_exists('message', $_POST) && $_POST['message']!=''){
-            $post = [
-                'firstname' => '',
-                'email' => $_POST['email'],
-                'message' => $_POST['message'],
-            ];
-            if(array_key_exists('email', $_POST)) $post['firstname'] = $_POST['firstname'];
-            ob_start();
-            echo "\n".'$faq["'.date("Y-m-d H:i:s").'"] = ';
-            var_export($post);
-            echo ";";
-            $post = ob_get_contents();
-            ob_end_clean();
-            file_put_contents($filename, $post, FILE_APPEND);
-        }
-    }
 }

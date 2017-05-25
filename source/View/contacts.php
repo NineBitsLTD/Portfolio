@@ -1,6 +1,6 @@
 <?php
 function print_content(){
-    $contacts = (new \Model\Contact())->Get("","title")->Rows;
+    $contacts = (new \Model\Contact())->Get("title")->GetResult()->Rows;
     ?>
     <h1>Contacts</h1>
     <hr>

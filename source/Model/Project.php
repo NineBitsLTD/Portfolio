@@ -1,7 +1,9 @@
 <?php
 namespace Model;
 
-class Project extends \Core\Model{
-    public $TableName='project';
+class Project extends \DataBase\SourceProvider{
+    function __construct() {
+        parent::__construct('project');
+    }
 }
 

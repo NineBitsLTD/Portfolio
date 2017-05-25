@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Май 18 2017 г., 10:29
+-- Время создания: Май 25 2017 г., 12:29
 -- Версия сервера: 10.1.21-MariaDB
 -- Версия PHP: 5.6.30
 
@@ -70,6 +70,34 @@ INSERT INTO `contact` (`id`, `title`, `value`) VALUES
 (2, 'Address', 'Bila Tserkva'),
 (3, 'E-mail', 'ninebits@meta.ua'),
 (4, 'WWW', 'intellectual.systems');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `faq`
+--
+
+CREATE TABLE `faq` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `parent_id` int(20) UNSIGNED DEFAULT NULL,
+  `firstname` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `faq`
+--
+
+INSERT INTO `faq` (`id`, `parent_id`, `firstname`, `email`, `message`, `created_at`) VALUES
+(1, NULL, 'vZXCfaz', 'asdf@sf.sdf', 'asdferthtsgfsdg', '2017-05-02 11:32:58'),
+(2, NULL, 'sdfgsdfg', 'sdfg@sfd.sdf', 'adgfasgkj', '2017-05-02 11:36:04'),
+(3, NULL, 'mahbsdmABHS', 'AHSD@SDC.ASD', '<b>asdfasdf</b>', '2017-05-25 08:58:18'),
+(4, NULL, 'asdfjgvakf', 'kuhd@jhdf.sdf', 'asjldf sdfsd fsdf sdfsd ', '2017-05-25 08:58:54'),
+(5, NULL, 'mzxbc zxc', 'jkhvji@hmbxcv.sad', 'mnhsda asdh asd asdjagsdkjaD ASDJGAHSDJ ASDdc asd.', '2017-05-25 08:59:22'),
+(6, NULL, 'sdvs dfsvd', 'dscfsd@jhb.zxcz.zx', 'zhxbczxhc zxjch jhzxc jzhx c', '2017-05-25 08:59:56'),
+(7, 3, 'Admin', 'Admin@meta.ua', 'Test hgchg hj fh fjjh ', '2017-05-25 09:00:46');
 
 -- --------------------------------------------------------
 
@@ -176,7 +204,8 @@ CREATE TABLE `user_role` (
 --
 
 INSERT INTO `user_role` (`id`, `name`, `right`) VALUES
-(1, 'Admin', 777);
+(1, 'Admin', 777),
+(2, 'Partner', 555);
 
 --
 -- Индексы сохранённых таблиц
@@ -195,6 +224,12 @@ ALTER TABLE `component`
 ALTER TABLE `contact`
   ADD PRIMARY KEY (`id`),
   ADD KEY `title` (`title`);
+
+--
+-- Индексы таблицы `faq`
+--
+ALTER TABLE `faq`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Индексы таблицы `menu`
@@ -244,6 +279,11 @@ ALTER TABLE `component`
 ALTER TABLE `contact`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
+-- AUTO_INCREMENT для таблицы `faq`
+--
+ALTER TABLE `faq`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+--
 -- AUTO_INCREMENT для таблицы `menu`
 --
 ALTER TABLE `menu`
@@ -267,7 +307,7 @@ ALTER TABLE `user2`
 -- AUTO_INCREMENT для таблицы `user_role`
 --
 ALTER TABLE `user_role`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

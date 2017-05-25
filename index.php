@@ -22,19 +22,18 @@ if(!isset($root)) $root = "";
 require_once('source/Core/Autoloader.php');
 
 \Registry::$Autoloader = new \Core\Autoloader([''=>'source/'], "source/Extensions");
-\Registry::$DB = new \Core\DataBase\MySql(new \Config\DataBase());
+\Registry::$DB = new \DataBase\MySql(new \Config\DataBase());
 \Registry::$DB->Connect();
 \Registry::$Data = new \Registry\Data();
 
-\Registry::$Data->Components = (new \Model\Component())->Get("","component")->Rows;
-\Registry::$Data->Menu = (new \Model\Menu())->Get("","key")->Rows;
+\Registry::$Data->Components = (new \Model\Component())->Get("component")->GetResult()->Rows;
+\Registry::$Data->Menu = (new \Model\Menu())->Get("key")->GetResult()->Rows;
 \Registry::$Data->Brand = "NineBits LTD";
 \Registry::$Data->BaseLink = $_SERVER['REQUEST_SCHEME']."://".$_SERVER['SERVER_NAME']."/";
 
-include 'source/Helper/html.php';
-
 if(array_key_exists('route', $_GET)) $route = $_GET['route']; else $route='home';
-$page='';
-foreach (\Registry::$Data->Menu as $pagename => $info) if(strtolower(substr($route, 0, strlen($pagename)))==$pagename) $page = $pagename;
+foreach (\Registry::$Data->Menu as $pagename => $info) 
+    if(strtolower(substr($route, 0, strlen($pagename)))==$pagename) \Registry::$Data->Page = $pagename;
 
-if($page!='') include "source/View/{$page}.php";
+if(\Registry::$Data->Page!='') include "source/View/".\Registry::$Data->Page.".php";
+else include "source/View/home.php";
