@@ -31,9 +31,9 @@ require_once('source/Core/Autoloader.php');
 \Registry::$Data->Brand = "NineBits LTD";
 \Registry::$Data->BaseLink = $_SERVER['REQUEST_SCHEME']."://".$_SERVER['SERVER_NAME']."/";
 
-if(array_key_exists('route', $_GET)) $route = $_GET['route']; else $route='home';
+if(array_key_exists('route', $_GET)) $route = $_GET['route']; else $route='Home';
 foreach (\Registry::$Data->Menu as $pagename => $info) 
-    if(strtolower(substr($route, 0, strlen($pagename)))==$pagename) \Registry::$Data->Page = $pagename;
+    if(strtolower(substr($route, 0, strlen($pagename)))==$pagename) \Registry::$Data->Page = ucfirst($pagename);
 
 if(\Registry::$Data->Page!='') include "source/View/".\Registry::$Data->Page.".php";
-else include "source/View/home.php";
+else include "source/View/Home.php";

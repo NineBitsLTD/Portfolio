@@ -24,6 +24,6 @@ function print_content(){
     <?php } ?>    
 <?php } 
 
-include 'source/view/base.php' 
+include 'source/View/Base.php' 
 
 ?>

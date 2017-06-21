@@ -72,6 +72,6 @@ function print_content(){
     </article>
 <?php } 
 
-include 'source/view/base.php' 
+include 'source/View/Base.php' 
 
 ?>
