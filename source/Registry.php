@@ -18,6 +18,17 @@ namespace {
          * @var \Registry\Data
          */
         public static $Data;
+        /**
+         *
+         * @var \Core\View
+         */
+        public static $View;
+        /**
+         * 
+         */
+        public static function Dispatch(){
+            new \Core\Router();
+        }
 
     }
 }
@@ -28,6 +39,6 @@ namespace Registry {
         public $Brand='';
         public $Components=[];
         public $Menu=[];
-        public $Page='';
+        public $Page='NotFound';
     }
 }
