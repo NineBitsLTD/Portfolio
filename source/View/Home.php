@@ -1,10 +1,16 @@
 <?php
-function print_content(){ ?>
+namespace View;
+
+class Home extends \Core\View {
+    public $Components=[];
+    
+    public function printContent() {
+    ?>
     <h1>Welcome!</h1>
     <hr>
     <article>
         <h3>Used components:</h3>
-        <?php foreach (\Registry::$Data->Components as $key => $value) { ?>
+        <?php foreach ($this->Components as $key => $value) { ?>
         <h4><?= strtoupper($key)?></h4>
         <ul>
             <?php foreach ($value as $index => $item) { ?>
@@ -22,7 +28,5 @@ function print_content(){ ?>
         </div>
     </article>
 <?php } 
-
-include 'source/View/Base.php' 
-
+}
 ?>

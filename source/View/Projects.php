@@ -1,10 +1,14 @@
 <?php
-function print_content(){ 
-    $projects = (new \Model\Project())->Get("type")->GetResult()->Rows;
+namespace View;
+
+class Projects extends \Core\View {
+    public $List=[];
+    
+    public function printContent() {
     ?>
     <h1>Projects</h1>
     <hr>
-    <?php foreach ($projects as $type => $items) { ?>
+    <?php foreach ($this->List as $type => $items) { ?>
     <article class="form-group">
         <h3><?=$type?></h3>
         <div class="list-group">
@@ -23,7 +27,5 @@ function print_content(){
     </article>
     <?php } ?>    
 <?php } 
-
-include 'source/View/Base.php' 
-
+}
 ?>

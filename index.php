@@ -24,6 +24,8 @@ require_once('source/Core/Autoloader.php');
 \Registry::$Autoloader = new \Core\Autoloader([''=>'source/'], "source/Extensions");
 \Registry::$DB = new \DataBase\MySql(new \Config\DataBase());
 \Registry::$DB->Connect();
+\Registry::$Session = new \Core\Session();
+\Registry::$Session->Start();
 \Registry::$Data = new \Registry\Data();
 \Registry::$Data->Components = (new \Model\Component())->Get("component")->GetResult()->Rows;
 \Registry::$Data->Menu = (new \Model\Menu())->Get("key")->GetResult()->Rows;

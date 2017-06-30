@@ -1,30 +1,18 @@
 <?php
-function print_content(){ 
-    $modelFaq = new \Model\Faq();
-    if(array_key_exists('email', $_POST) && $_POST['email']!='' && array_key_exists('message', $_POST) && $_POST['message']!=''){
-        $post = [
-            'firstname' => '',
-            'email' => $_POST['email'],
-            'message' => $_POST['message'],
-        ];
-        if(array_key_exists('firstname', $_POST)) $post['firstname'] = $_POST['firstname'];
-        $modelFaq->Set($post);
-    }
-    $offset = 0;
-    $limit = 2;
-    if(isset($_GET['offset'])) $offset = $_GET['offset'];
-    if(isset($_GET['limit'])) $limit = $_GET['limit'];
-    $total = $modelFaq->Clear()->Where("`parent_id` IS NULL")->GetTotal();
-    $faq = $modelFaq->Limit($offset,$limit)->Sort(['created_at'=>'desc'])->Get('id')->ClearLimit()->GetResult()->Rows;
-    foreach ($faq as $id=>$value) {
-        $faq[$id]['request'] = $modelFaq->ClearWhere()->Where("`parent_id`='{$value['id']}'")->Get('id')->GetResult()->Rows;
-    }
+namespace View;
+
+class Faq extends \Core\View {
+    public $List=[];
+    public $Offset=0;
+    public $Limit=0;
+
+    public function printContent() {
     ?>
     <h1>FAQ</h1>
     <hr>
     <article class="">
         <h3>List of questions and answers:</h3>
-    <?php foreach ($faq as $value) { ?>
+    <?php foreach ($this->List as $value) { ?>
         <div class="form-group form-control">
             <label><?=$value['created_at']?>: <b><?=$value['firstname']?></b> <i><?=$value['email']?></i></label>
             <hr>
@@ -41,11 +29,11 @@ function print_content(){
         </div>
     <?php } ?>
         <div class="form-group">
-            <?php if(($offset-$limit)>=0){?>    
-            <a class="btn btn-secondary" href="<?=\Registry::$Data->BaseLink?>/<?=\Registry::$Data->Page?>?offset=<?=$offset-$limit?>">Prev</a>
+            <?php if(($this->Offset-$this->Limit)>=0){?>    
+            <a class="btn btn-secondary" href="<?=\Registry::$Data->BaseLink?>/<?=\Registry::$Data->Page?>?offset=<?=$this->Offset-$this->Limit?>">Prev</a>
             <?php } ?>
-            <?php if($total>($offset+$limit)){?>
-            <a class="btn btn-secondary" href="<?=\Registry::$Data->BaseLink?>/<?=\Registry::$Data->Page?>?offset=<?=$offset+$limit?>">Next</a>
+            <?php if($this->Total>($this->Offset+$this->Limit)){?>
+            <a class="btn btn-secondary" href="<?=\Registry::$Data->BaseLink?>/<?=\Registry::$Data->Page?>?offset=<?=$this->Offset+$this->Limit?>">Next</a>
             <?php } ?>
         </div>
     </article>
@@ -71,7 +59,5 @@ function print_content(){
         </div>
     </article>
 <?php } 
-
-include 'source/View/Base.php' 
-
+}
 ?>

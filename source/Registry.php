@@ -24,6 +24,10 @@ namespace {
          */
         public static $View;
         /**
+         * @var \Core\Session
+         */
+        public static $Session;
+        /**
          * 
          */
         public static function Dispatch(){

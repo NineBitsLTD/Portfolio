@@ -2,7 +2,7 @@
 namespace View;
 
 class Contacts extends \Core\View {
-    public $List;
+    public $List=[];
     
     public function printContent() {
     ?>
