@@ -123,7 +123,9 @@ INSERT INTO `menu` (`id`, `key`, `title`, `text`, `icon`, `href`, `class`) VALUE
 (1, 'home', 'Main page - Home', 'Home', 'fa-home', '', 'nav-item'),
 (2, 'projects', 'Projects', 'Projects', 'fa-file-code-o', 'projects/', 'nav-item'),
 (3, 'contacts', 'Contacts', 'Contacts', 'fa-phone', 'contacts/', 'nav-item'),
-(4, 'faq', 'List of questions and answers', 'FAQ', 'fa-question', 'faq/', 'nav-item');
+(4, 'faq', 'List of questions and answers', 'FAQ', 'fa-question', 'faq/', 'nav-item'),
+(5, 'login', 'Enter', 'Enter', 'fa-sign-in', 'login/', 'nav-item'),
+(6, 'logout', 'Exit', 'Exit', 'fa-sign-out', 'logout/', 'nav-item');
 
 -- --------------------------------------------------------
 
@@ -161,51 +163,21 @@ INSERT INTO `project` (`id`, `type`, `title`, `description`, `demo`, `real`, `do
 
 CREATE TABLE `user` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `user_role_id` int(20) NOT NULL,
+  `right` varchar(4) NOT NULL,
   `firstname` varchar(255) NOT NULL,
   `lastname` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `pwd_hash` varchar(32) NOT NULL
+  `pwd_hash` varchar(32) NOT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Дамп данных таблицы `user`
 --
 
-INSERT INTO `user` (`id`, `user_role_id`, `firstname`, `lastname`, `email`, `pwd_hash`) VALUES
-(2, 0, 'Djon', '', '', ''),
-(3, 1, 'Sara', '', '', '');
-
--- --------------------------------------------------------
-
---
--- Структура таблицы `user2`
---
-
-CREATE TABLE `user2` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `firstname` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Структура таблицы `user_role`
---
-
-CREATE TABLE `user_role` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `right` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Дамп данных таблицы `user_role`
---
-
-INSERT INTO `user_role` (`id`, `name`, `right`) VALUES
-(1, 'Admin', 777),
-(2, 'Partner', 555);
+INSERT INTO `user` (`firstname`, `lastname`, `email`, `pwd_hash`) VALUES
+('Djon', '', 'admin@mail', '81dc9bdb52d04dc20036dbd8313ed055'),
+('Sara', '', 'sara@mail', '81dc9bdb52d04dc20036dbd8313ed055');
 
 --
 -- Индексы сохранённых таблиц
@@ -253,18 +225,6 @@ ALTER TABLE `user`
   ADD KEY `user_role_id` (`user_role_id`);
 
 --
--- Индексы таблицы `user2`
---
-ALTER TABLE `user2`
-  ADD UNIQUE KEY `id` (`id`);
-
---
--- Индексы таблицы `user_role`
---
-ALTER TABLE `user_role`
-  ADD PRIMARY KEY (`id`);
-
---
 -- AUTO_INCREMENT для сохранённых таблиц
 --
 
@@ -298,16 +258,7 @@ ALTER TABLE `project`
 --
 ALTER TABLE `user`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
---
--- AUTO_INCREMENT для таблицы `user2`
---
-ALTER TABLE `user2`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT для таблицы `user_role`
---
-ALTER TABLE `user_role`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
