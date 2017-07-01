@@ -6,7 +6,11 @@ class Home extends \Core\View {
     
     public function printContent() {
     ?>
-    <h1>Welcome!</h1>
+    <h1>Welcome
+        <?php if(\Registry::$Session->IsLogged()) { ?>
+        <span class="text-primary"><?= \Registry::$Session->User->Data['firstname']?> <?= \Registry::$Session->User->Data['lastname']?></span>
+        <?php } ?>!
+    </h1>
     <hr>
     <article>
         <h3>Used components:</h3>

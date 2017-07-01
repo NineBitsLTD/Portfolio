@@ -26,5 +26,10 @@ class Faq extends \Core\Controller {
         }
         $view->printContent();
     }
+    public function postEdit(){
+        $view = new \View\Base();
+        $view->Content = new \View\FaqEdit();
+        $view->printContent();
+    }
 }
 

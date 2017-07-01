@@ -43,8 +43,11 @@ class HTML{
      */
     static public function PrintMenu(array $menu){ ?>
         <ul class="navbar-nav mr-auto">
-            <?php foreach ($menu as $key => $item) if(is_array($item) && (array_key_exists('icon',$item) || array_key_exists('text',$item))) { ?>
-            <li<?=self::PrintAttributes(['class','title'], $item)?>>
+            <?php foreach ($menu as $key => $item) if(is_array($item) && 
+                (array_key_exists('icon',$item) || array_key_exists('text',$item)) && 
+                ($key!='logout' || \Registry::$Session->IsLogged()) && 
+                ($key!='login' || !\Registry::$Session->IsLogged())) { ?>
+            <li<?=self::PrintAttributes(['class','title'], $item)?> data-key="item-<?=$key?>">
                 <a class="nav-link"<?=self::PrintAttributes(['href'], $item)?>>
                     <?php if(array_key_exists('icon', $item)){ ?>
                     <i class="fa <?=$item['icon']?>"></i>

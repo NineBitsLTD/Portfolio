@@ -5,6 +5,9 @@ class Faq extends \Core\View {
     public $List=[];
     public $Offset=0;
     public $Limit=0;
+    
+    public $BtnEdit='Edit';
+    public $BtnDelete='Delete';
 
     public function printContent() {
     ?>
@@ -14,6 +17,12 @@ class Faq extends \Core\View {
         <h3>List of questions and answers:</h3>
     <?php foreach ($this->List as $value) { ?>
         <div class="form-group form-control">
+            <?php if(\Registry::$Session->IsLogged()) { ?>
+            <div class="btn-group pull-right" role="group">
+                <a href="<?= \Registry::$Data->BaseLink?>faq/edit?id=<?=$value['id']?>" class="btn btn-sm btn-secondary" title="<?= htmlentities($this->BtnEdit)?>"><i class="fa fa-edit"></i></a>
+                <a href="<?= \Registry::$Data->BaseLink?>faq/delete?id=<?=$value['id']?>" class="btn btn-sm btn-danger" title="<?= htmlentities($this->BtnDelete)?>"><i class="fa fa-remove"></i></a>
+            </div>
+            <?php } ?>
             <label><?=$value['created_at']?>: <b><?=$value['firstname']?></b> <i><?=$value['email']?></i></label>
             <hr>
             <?= htmlentities($value['message'])?>
@@ -28,14 +37,20 @@ class Faq extends \Core\View {
             <?php } ?>
         </div>
     <?php } ?>
-        <div class="form-group">
-            <?php if(($this->Offset-$this->Limit)>=0){?>    
-            <a class="btn btn-secondary" href="<?=\Registry::$Data->BaseLink?>/<?=\Registry::$Data->Page?>?offset=<?=$this->Offset-$this->Limit?>">Prev</a>
-            <?php } ?>
-            <?php if($this->Total>($this->Offset+$this->Limit)){?>
-            <a class="btn btn-secondary" href="<?=\Registry::$Data->BaseLink?>/<?=\Registry::$Data->Page?>?offset=<?=$this->Offset+$this->Limit?>">Next</a>
-            <?php } ?>
-        </div>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <?php if(($this->Offset-$this->Limit)>=0){?>
+                <li class="page-item">
+                    <a class="page-link" href="<?=\Registry::$Data->BaseLink?>/<?=\Registry::$Data->Page?>?offset=<?=$this->Offset-$this->Limit?>">Prev</a>
+                </li>
+                <?php } ?>
+                <?php if($this->Total>($this->Offset+$this->Limit)){?>
+                <li class="page-item">
+                    <a class="page-link" href="<?=\Registry::$Data->BaseLink?>/<?=\Registry::$Data->Page?>?offset=<?=$this->Offset+$this->Limit?>">Next</a>
+                </li>
+                <?php } ?>
+            </ul>
+        </nav>
     </article>
     <article class="form-group">
         <h3>Write us:</h3>

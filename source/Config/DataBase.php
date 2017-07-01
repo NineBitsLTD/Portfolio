@@ -35,13 +35,13 @@ class DataBase
      * 
      * @var string
      */
-    public $User = "root";
+    public $User = "test";
     /**
      * Пароль пользователя базы данных
      * 
      * @var string
      */
-    public $Password = "";
+    public $Password = "1234";
     /**
      * Кодировка базы данных
      * 

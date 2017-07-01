@@ -7,40 +7,27 @@ namespace User;
  * @uses \Sys\Config\Mailer
  * 
  */
-class Controller extends \Sys\Controller { 
+class Controller extends \Core\Controller { 
     
-    public function methodIndex($data = array()) {
-        $this->Reg->Session->User->Login(
-            (array_key_exists('login', $this->Reg->Request->Post)?$this->Reg->Request->Post['login']:null), 
-            (array_key_exists('password', $this->Reg->Request->Post)?$this->Reg->Request->Post['password']:null), 
-            (array_key_exists('remember', $this->Reg->Request->Post)?$this->Reg->Request->Post['remember']:false),
-            (array_key_exists('key', $this->Reg->Request->Get)?$this->Reg->Request->Get['key']:null));
-        if($this->Reg->Session->IsLogged()){
-            if(array_key_exists('key', $this->Reg->Request->Get) && $this->Reg->Request->Get['key']!='') {
-                if($this->Reg->Session->User->Data['role_id']==7) $this->Reg->Redirect('guest');
-                else $this->Reg->Redirect('profile');
-            } else $this->Reg->Redirect($this->Reg->Request->PathDefault);
+    public function getIndex() {
+        \Registry::$Session->User->Login(
+            (array_key_exists('login', $_POST)?$_POST['login']:null), 
+            (array_key_exists('password', $_POST)?$_POST['password']:null), 
+            (array_key_exists('remember', $_POST)?$_POST['remember']:false));
+        if(\Registry::$Session->IsLogged()){
+            (new \Controller\Home())->getIndex();
+            exit();
         }
-        if(array_key_exists('msg', $this->Reg->Data)) {
-            $data['msg'] = $this->Reg->Data['msg'];
-            unset($this->Data['msg']);
+        $view = new \View\Base();
+        $view->Content = new \View\Login();
+        if(isset(\Registry::$Session->Data['msg'])) {
+            $view->Content->Error = \Registry::$Session->Data['msg']['error'];
+            unset(\Registry::$Session->Data['msg']);
         }
-        $data['base'] = $this->Reg->Link([],[],false);
-        $data['link'] = $this->Reg->Link();
-        $data['theme'] = $this->Reg->View->Theme;
-        $data['link_password_reset'] = $this->Reg->Link(\Sys\Helper::$Route->Normalize($this->Reg->Request->PathStart)."/password_reset");
-        $data['link_signup'] = $this->Reg->Link(\Sys\Helper::$Route->Normalize($this->Reg->Request->PathStart)."/signup");
-        $data['link_login'] = $this->Reg->Link(\Sys\Helper::$Route->Normalize($this->Reg->Request->PathStart)."/login");
-        $data['ajax']=$this->Reg->IsAjax();
-        $data['lng_menu'] = $this->GetLngMenu('languages', true);
-        echo $this->Render($data);
+        $view->printContent();
     }
-    public function methodLogin($data = array()) {
-        $this->Action->Method = "Index";
-        $this->methodIndex($data);
-    }
-    public function methodSignup($data = array()) {
-        $this->Reg->Session->Data['msg'] = [];
+    public function getSignup() {
+        /*$this->Reg->Session->Data['msg'] = [];
         $response = [
             'success'=>'',
             'error'=>''
@@ -74,68 +61,10 @@ class Controller extends \Sys\Controller {
         $data['link_signup'] = $this->Reg->Link(\Sys\Helper::$Route->Normalize($this->Reg->Request->PathStart)."/signup");
         $data['link'] = $this->Reg->Link(\Sys\Helper::$Route->Normalize($this->Reg->Request->PathStart));
         if($response['error']=='') $response['success'] = $modelSalesMsg->GetAll("`name`='Success'")->Row['title'][$lng];
-        $this->Reg->View->RenderJson($response);
+        $this->Reg->View->RenderJson($response);*/
     }
-    public function methodPasswordReset($data = array()) {
-        if(array_key_exists('login', $this->Reg->Request->Post) && $this->Reg->Request->Post['login']==''){
-            $data['msg']=$this->Reg->Translate('MsgEnterLogin');
-        } else if(array_key_exists('login', $this->Reg->Request->Post)){
-            $ReCaptchaResponse = $this->Reg->ReCaptcha->VerifyResponse(
-                $this->Reg->Request->Server['REMOTE_ADDR'], 
-                $this->Reg->Request->Post['g-recaptcha-response']
-            );
-            if($ReCaptchaResponse->IsValid){
-                $modelUser = new \User\Model\User($this->Reg);
-                if($modelUser->UserExists($this->Reg->Request->Post['login'])===true){
-                    $user = $modelUser->Forgot([
-                        'email'=>$this->Reg->Request->Post['login'],
-                        'password_reset_token'=> \Sys\Helper::$Security->TokenCreate(16)
-                    ]);
-                    if(array_key_exists('id', $user)){
-                        $user_data = [
-                            "id" => $user['id'],
-                            "firstname" => $user['firstname'],
-                            "lastname" => $user['lastname'],
-                            "link" => $this->Reg->Link('main',["key"=>$user['password_reset_token']]),
-                        ];
-                        $msg = $this->Reg->MessageTrigger('user/password_reset', $this->Reg->Request->Post['login'], $user_data);
-                        if($msg!='') {
-                            $this->Reg->Session->Data['msg'] = $this->Reg->Translate("MsgAuthFailedSendEmail").": ".$msg;
-                        } else {
-                            $this->Reg->Session->Data['msg'] = $this->Reg->Translate("MsgAuthForgotSuccess");
-                        }
-                        $this->Reg->Redirect('main');
-                    } else {
-                        $data['msg'] = $this->Reg->Translate("MsgEmailNotExists");
-                    }
-                } else {
-                    $data['msg'] = $this->Reg->Translate("MsgEmailNotExists");
-                }
-            } else {
-                $data['msg'] = $this->Reg->Translate("MsgCaptchaError");
-            }
-        }
-        $data['base'] = $this->Reg->Link([],[],false);
-        $data['link'] = $this->Reg->Link();
-        $data['theme'] = $this->Reg->View->Theme;
-        $data['ajax']=$this->Reg->IsAjax();
-        $data['lng_menu'] = $this->GetLngMenu('languages', true);
-        echo $this->Render($data);
-    }
-    public function methodLoginFacebook($data = array()) {
-        $this->methodIndex($data);
-    }
-    public function methodLoginGoogle($data = array()) {
-        $this->methodIndex($data);
-    }
-    public function methodLoginOdnoklassniki($data = array()) {
-        $this->methodIndex($data);
-    }
-    public function methodLoginVk($data = array()) {
-        $this->methodIndex($data);
-    }
-    public function methodLogout($data = array()) {
-        if($this->Reg->Session->IsLogged()) $this->Reg->Session->User->Logout();
-        $this->Reg->Redirect('main');
+    public function getLogout() {
+        if(\Registry::$Session->IsLogged()) \Registry::$Session->User->Logout();
+        (new \Controller\Home())->getIndex();
     }
 }

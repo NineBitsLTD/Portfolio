@@ -9,7 +9,7 @@ class Session {
     /**
      * Пользователь
      * 
-     * @var \User\Instance
+     * @var \Code\User
      */
     public $User = null;
     /**
@@ -18,27 +18,7 @@ class Session {
      * @var array
      */
     public $Data = [];
-    
-    /**
-     * Сессия
-     * 
-     * @param type $registry Конфигурация проекта
-     * @param type $handler
-     */
-    public function __construct() {
-    }
-    /**
-     * 
-     */
-    public function Destroy() {
-	if ( session_id() ) {
-            session_unset();
-            setcookie(session_name(), session_id(), time()-60*60*24, '/');
-            setcookie('KEY', '', time()-60*60*24, '/');
-            session_destroy();
-            $this->User = null;
-	}
-    }
+        
     /**
      * Старт сесии
      * 
@@ -47,7 +27,7 @@ class Session {
      * @return boolean
      * @throws \Exception
      */
-    public function Start($session_id = '', $key = 'default') {  
+    public function __construct($session_id = '', $key = 'default') {  
         if (!$this->GetId()) {
             ini_set('session.use_only_cookies', 'Off');
             ini_set('session.use_cookies', 'On');
@@ -62,10 +42,22 @@ class Session {
             session_set_cookie_params(0, '/');
             session_start();            
         }
-        if (!isset($_SESSION[$key]))  $_SESSION[$key] = [];        
+        if (!isset($_SESSION[$key]))  $_SESSION[$key] = [];
+        //print_r($_SESSION);
         $this->Data =& $_SESSION[$key];
-        //$this->User = new \User\Instance();
         return true;			
+    }
+    /**
+     * 
+     */
+    public function Destroy() {
+	if ( session_id() ) {
+            session_unset();
+            setcookie(session_name(), session_id(), time()-60*60*24, '/');
+            setcookie('KEY', '', time()-60*60*24, '/');
+            session_destroy();
+            $this->User = null;
+	}
     }
     /**
      * Получить ID сессии

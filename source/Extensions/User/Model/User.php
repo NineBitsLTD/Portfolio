@@ -2,10 +2,12 @@
 
 namespace User\Model;
 
-class User extends \Sys\Model {
-    protected $TableName = "users";
+class User extends \DataBase\SourceProvider{
+    function __construct() {
+        parent::__construct('user');
+    }
     
-    public function GetByPassword($name, $password){        
+ /*   public function GetByPassword($name, $password){        
         $records = $this->Reg->DB->Query(
             "SELECT * FROM `".$this->GetTableName()."` WHERE (`email`='".$this->Escape($name).
             "' AND `email` IS NOT NULL AND `email` <> '') OR (`username`='".$this->Escape($name).
@@ -283,170 +285,6 @@ class User extends \Sys\Model {
         }
         return 0;
     }
-        
-    public function StatisticChildrenByYear($user_id, $year, $count=10){
-        $sql = "SELECT count(`id`) as `count`, count(IF(`role_id`=7,1,NULL)) as `count_guest`, Year(IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`)) as `year`
-            FROM `users` WHERE `user_id`={$user_id} AND 
-            Year(IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`))>={$year}
-            GROUP BY `year` ORDER BY `year` ASC LIMIT 0,{$count}";
-        return $this->Reg->DB->Query($sql);
-    }
-    public function StatisticChildrenByMonth($user_id, $year){
-        $sql = "SELECT count(`id`) as `count`, count(IF(`role_id`=7,1,NULL)) as `count_guest`, Year(IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`)) as `year`,
-            Month(IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`)) as `month`
-            FROM `users` WHERE `user_id`={$user_id} AND 
-            Year(IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`))={$year}
-            GROUP BY `year`, `month` ORDER BY `month` ASC";
-        
-        return $this->Reg->DB->Query($sql);
-    }
-    public function StatisticChildrenByDay($user_id, $year, $month){
-        $sql = "SELECT count(`id`) as `count`, count(IF(`role_id`=7,1,NULL)) as `count_guest`, Year(IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`)) as `year`,
-            Month(IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`)) as `month`, 
-            Day(IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`)) as `day` 
-            FROM `users` WHERE `user_id`={$user_id} AND 
-            Year(IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`))={$year} AND 
-            Month(IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`))={$month} 
-            GROUP BY `year`, `month`, `day` ORDER BY `day` ASC";
-        
-        return $this->Reg->DB->Query($sql);
-    }    
-    public function StatisticChildrenFromSales($user_id, $offset = 0, $limit = 0){
-        $sql="SELECT count(t1.`id`) as `count`, t1.`sales_id`, t2.`title` FROM `users` as t1
-            LEFT JOIN lng_sys_{$this->Reg->Lng->GetCode()} as t2 ON t2.`code`=CONCAT('sales/title/',t1.`sales_id`)
-            WHERE t1.`user_id`={$user_id}
-            GROUP BY t1.`sales_id`, t2.`title`".($limit>0?" LIMIT ".($offset>0?$offset:0).",{$limit}":"");
-                
-        return $this->Reg->DB->Query($sql);
-    }    
-    public function StatisticChildrenCountPartner($user_id){
-        $sql="SELECT count(`id`) as `count`, count(IF(`role_id`=7, 1, NULL)) as `count_guest` FROM `users` WHERE `user_id`={$user_id}";
-                
-        return $this->Reg->DB->Query($sql);
-    }    
-    public function StatisticChildrenLookWebinar($user_id){
-        $sql="SELECT count(`id`) as `count`, count(IF(SUBSTRING(REVERSE(BIN(`status`)),2,1)='1',1,NULL)) as `count_look` FROM `users` WHERE `user_id`={$user_id}";                
-        return $this->Reg->DB->Query($sql);
-    }
-    public function StatisticChildrenCountPayment($user_id){
-        $sql="SELECT count(`id`) as `count`, count(IF(`expirate_at`>CURRENT_TIMESTAMP, 1, NULL)) as `count_expirate` FROM `users` WHERE `user_id`={$user_id}";
-        return $this->Reg->DB->Query($sql);
-    }
-    public function StatisticChildrenCountPaymentPackage($user_id){
-        $sql="SELECT * FROM `users`";
-        return $this->Reg->DB->Query($sql);
-    }    
-    
-    public function StatisticByYear($year, $count=10){
-        $sql = "SELECT count(`id`) as `count`, count(IF(`role_id`=7,1,NULL)) as `count_guest`, Year(IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`)) as `year`
-            FROM `users` WHERE Year(IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`))>={$year}
-            GROUP BY `year` ORDER BY `year` ASC LIMIT 0,{$count}";
-        return $this->Reg->DB->Query($sql);
-    }
-    public function StatisticByMonth($year){
-        $sql = "SELECT count(`id`) as `count`, count(IF(`role_id`=7,1,NULL)) as `count_guest`, Year(IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`)) as `year`,
-            Month(IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`)) as `month`
-            FROM `users` WHERE Year(IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`))={$year}
-            GROUP BY `year`, `month` ORDER BY `month` ASC";
-        
-        return $this->Reg->DB->Query($sql);
-    }
-    public function StatisticByDay($year, $month){
-        $sql = "SELECT count(`id`) as `count`, count(IF(`role_id`=7,1,NULL)) as `count_guest`, Year(IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`)) as `year`,
-            Month(IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`)) as `month`, 
-            Day(IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`)) as `day` 
-            FROM `users` WHERE Year(IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`))={$year} AND 
-            Month(IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`))={$month} 
-            GROUP BY `year`, `month`, `day` ORDER BY `day` ASC";
-        
-        return $this->Reg->DB->Query($sql);
-    }    
-    public function StatisticFromSales($offset = 0, $limit = 0){
-        $sql="SELECT count(t1.`id`) as `count`, t1.`sales_id`, t2.`title` FROM `users` as t1
-            LEFT JOIN lng_sys_{$this->Reg->Lng->GetCode()} as t2 ON t2.`code`=CONCAT('sales/title/',t1.`sales_id`)
-            GROUP BY t1.`sales_id`, t2.`title`".($limit>0?" LIMIT ".($offset>0?$offset:0).",{$limit}":"");
-                
-        return $this->Reg->DB->Query($sql);
-    }    
-    public function StatisticCountPartner(){
-        $sql="SELECT count(`id`) as `count`, count(IF(`role_id`=7, 1, NULL)) as `count_guest` FROM `users`";                
-        return $this->Reg->DB->Query($sql);
-    }    
-    public function StatisticLookWebinar(){
-        $sql="SELECT count(`id`) as `count`, count(IF(SUBSTRING(REVERSE(BIN(`status`)),2,1)='1',1,NULL)) as `count_look` FROM `users`";                
-        return $this->Reg->DB->Query($sql);
-    }
-    public function StatisticCountPayment(){
-        $sql="SELECT count(`id`) as `count`, count(IF(`expirate_at`>CURRENT_TIMESTAMP, 1, NULL)) as `count_expirate` FROM `users`";
-        return $this->Reg->DB->Query($sql);
-    }
-    public function StatisticCountPaymentPackage(){
-        $sql="SELECT * FROM `users`";
-        return $this->Reg->DB->Query($sql);
-    }    
-    
-    public function LeaderboardVip1($max_users, $days=7){
-        if((int)$max_users<1) $max_users=1; else $max_users = (int)$max_users;
-        $sql="SELECT t1.`count_vip`, t2.* FROM (SELECT `user_id`, count(IF(SUBSTRING(REVERSE(BIN(`status`)),6,1)='1',1,NULL)) as `count_vip` FROM `users` 
-                WHERE `user_id` IS NOT NULL AND `user_id`>0 AND `updated_vip1_at` IS NOT NULL AND `updated_vip1_at`>'".date("Y-m-d", strtotime("- {$days} days"))."'
-                GROUP BY `user_id`) as t1
-                LEFT JOIN `users` as t2 ON t1.`user_id`=t2.`id`
-                WHERE t1.`count_vip`>0
-                ORDER BY t1.`count_vip` DESC
-                LIMIT 0, {$max_users}";
-        return $this->Reg->DB->Query($sql);
-    }    
-    public function LeaderboardVip2($max_users, $days=7){
-        if((int)$max_users<1) $max_users=1; else $max_users = (int)$max_users;
-        $sql="SELECT t1.`count_vip`, t2.* FROM (SELECT `user_id`, count(IF(SUBSTRING(REVERSE(BIN(`status`)),7,1)='1',1,NULL)) as `count_vip` FROM `users` 
-                WHERE `user_id` IS NOT NULL AND `user_id`>0 AND `updated_vip2_at` IS NOT NULL AND `updated_vip2_at`>'".date("Y-m-d", strtotime("- {$days} days"))."'
-                GROUP BY `user_id`) as t1
-                LEFT JOIN `users` as t2 ON t1.`user_id`=t2.`id`
-                WHERE t1.`count_vip`>0
-                ORDER BY t1.`count_vip` DESC
-                LIMIT 0, {$max_users}";
-        return $this->Reg->DB->Query($sql);
-    }    
-    public function LeaderboardVip3($max_users=5, $days=7){
-        if((int)$max_users<1) $max_users=1; else $max_users = (int)$max_users;
-        $sql="SELECT t1.`count_vip`, t2.* FROM (SELECT `user_id`, count(IF(SUBSTRING(REVERSE(BIN(`status`)),8,1)='1',1,NULL)) as `count_vip` FROM `users` 
-                WHERE `user_id` IS NOT NULL AND `user_id`>0 AND `updated_vip3_at` IS NOT NULL AND `updated_vip3_at`>'".date("Y-m-d", strtotime("- {$days} days"))."'
-                GROUP BY `user_id`) as t1
-                LEFT JOIN `users` as t2 ON t1.`user_id`=t2.`id`
-                WHERE t1.`count_vip`>0
-                ORDER BY t1.`count_vip` DESC
-                LIMIT 0, {$max_users}";
-        return $this->Reg->DB->Query($sql);
-    }    
-    public function LeaderboardVideo($max_users=5, $days=7){
-        if((int)$max_users<1) $max_users=1; else $max_users = (int)$max_users;
-        $sql="SELECT t1.`count_vip`, t2.* FROM (SELECT `user_id`, count(IF(SUBSTRING(REVERSE(BIN(`status`)),2,1)='1',1,NULL)) as `count_vip` FROM `users` 
-                WHERE `user_id` IS NOT NULL AND `user_id`>0 AND IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`) IS NOT NULL AND IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`)>'".date("Y-m-d", strtotime("- {$days} days"))."'
-                GROUP BY `user_id`) as t1
-                LEFT JOIN `users` as t2 ON t1.`user_id`=t2.`id`
-                WHERE t1.`count_vip`>0
-                ORDER BY t1.`count_vip` DESC
-                LIMIT 0, {$max_users}";
-        return $this->Reg->DB->Query($sql);
-    }    
-    public function LeaderboardGuest($max_users=5, $days=7){
-        if((int)$max_users<1) $max_users=1; else $max_users = (int)$max_users;
-        $sql="SELECT t1.`count_vip`, t2.* FROM (SELECT `user_id`, count(`id`) as `count_vip` FROM `users` 
-                WHERE `user_id` IS NOT NULL AND `user_id`>0 AND IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`) IS NOT NULL AND IF(`change_sponsor_at` IS NULL,`created_at`,`change_sponsor_at`)>'".date("Y-m-d", strtotime("- {$days} days"))."'
-                GROUP BY `user_id`) as t1
-                LEFT JOIN `users` as t2 ON t1.`user_id`=t2.`id`
-                WHERE t1.`count_vip`>0
-                ORDER BY t1.`count_vip` DESC
-                LIMIT 0, {$max_users}";
-        return $this->Reg->DB->Query($sql);
-    }
-    public function LeaderboardLastByVip($max_users=5){
-        if((int)$max_users<1) $max_users=1; else $max_users = (int)$max_users;
-        $sql="SELECT *, IF(`updated_vip1_at` IS NOT NULL AND `updated_vip1_at`>`updated_vip2_at`,`updated_vip1_at`,IF(`updated_vip2_at` IS NOT NULL AND `updated_vip2_at`>`updated_vip3_at`,`updated_vip2_at`,`updated_vip3_at`)) as `vip_at`, IF(`updated_vip1_at` IS NOT NULL AND `updated_vip1_at`>`updated_vip2_at`,1 ,IF(`updated_vip2_at` IS NOT NULL AND `updated_vip2_at`>`updated_vip3_at`,2,3)) as `vip` FROM `users`
-            WHERE (IF(`updated_vip1_at` IS NOT NULL AND `updated_vip1_at`>`updated_vip2_at`,`updated_vip1_at`,IF(`updated_vip2_at` IS NOT NULL AND `updated_vip2_at`>`updated_vip3_at`,`updated_vip2_at`,`updated_vip3_at`)) IS NOT NULL)
-            ORDER BY `vip_at` DESC
-            LIMIT 0, {$max_users}";
-        return $this->Reg->DB->Query($sql);
-    }
+*/
 }
 
