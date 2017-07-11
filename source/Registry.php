@@ -17,7 +17,7 @@ namespace {
         /**
          * @var \Registry\Data
          */
-        public static $Data;
+        public static $Data=[];
         /**
          *
          * @var \Core\View

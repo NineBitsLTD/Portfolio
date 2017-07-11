@@ -79,7 +79,7 @@ class MySql extends \DataBase\Provider
      * @return string Экранированные данные
      */
     public function Escape($value) {
-        return \Helper::$Security->EncodeSql($value);
+        return \Helper\HTML::EncodeSql($value);
     }
     /**
      * Получение последнего индекса записи после запроса INSERT

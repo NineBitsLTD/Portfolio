@@ -27,9 +27,51 @@ class Faq extends \Core\Controller {
         $view->printContent();
     }
     public function postEdit(){
+        $modelFaq = new \Model\Faq();
         $view = new \View\Base();
         $view->Content = new \View\FaqEdit();
+        if(isset($_GET['id'])) {
+            $view->Content->Item = $modelFaq->GetById($_GET['id'])->GetResult()->Row;
+            unset($view->Content->Item['parent_id']);
+            $view->Content->ID = $_GET['id'];
+        }
         $view->printContent();
+    }
+    public function postAnswer(){
+        $modelFaq = new \Model\Faq();
+        $view = new \View\Base();
+        $view->Content = new \View\FaqEdit();
+        if(isset($_GET['id'])) {
+            $item = $modelFaq->Where("`parent_id`={$_GET['id']}")->Get()->GetResult()->Row;
+            if(array_key_exists('id', $item)){
+                $view->Content->Item = $item;
+            } else {
+                $view->Content->Item = [
+                    'parent_id'=>$_GET['id'],
+                    'firstname'=>'',
+                    'email'=>'',
+                    'message'=>''
+                ];
+            }
+            $view->Content->ParentID = $_GET['id'];
+        }
+        $view->printContent();
+    }
+    public function postDelete(){
+        if(\Registry::$Session->IsLogged() && isset($_GET['id'])){
+            $modelFaq = new \Model\Faq();
+            $modelFaq->Delete([$_GET['id']]);
+        }
+        $this->getIndex();
+    }
+    public function postSave(){
+        if(\Registry::$Session->IsLogged() && isset($_POST['item'])){
+            $modelFaq = new \Model\Faq();
+            if(array_key_exists('id', $_POST['item'])) $_POST['item']['id']=(int)$_POST['item']['id'];
+            if(array_key_exists('parent_id', $_POST['item'])) $_POST['item']['parent_id']=(int)$_POST['item']['parent_id'];
+            $modelFaq->Set($_POST['item']);
+        }
+        $this->getIndex();
     }
 }
 

@@ -6,6 +6,7 @@ class Faq extends \Core\View {
     public $Offset=0;
     public $Limit=0;
     
+    public $BtnAnswer='Answer';
     public $BtnEdit='Edit';
     public $BtnDelete='Delete';
 
@@ -19,6 +20,7 @@ class Faq extends \Core\View {
         <div class="form-group form-control">
             <?php if(\Registry::$Session->IsLogged()) { ?>
             <div class="btn-group pull-right" role="group">
+                <a href="<?= \Registry::$Data->BaseLink?>faq/answer?id=<?=$value['id']?>" class="btn btn-sm btn-primary" title="<?= htmlentities($this->BtnAnswer)?>"><i class="fa fa-envelope-o"></i></a>
                 <a href="<?= \Registry::$Data->BaseLink?>faq/edit?id=<?=$value['id']?>" class="btn btn-sm btn-secondary" title="<?= htmlentities($this->BtnEdit)?>"><i class="fa fa-edit"></i></a>
                 <a href="<?= \Registry::$Data->BaseLink?>faq/delete?id=<?=$value['id']?>" class="btn btn-sm btn-danger" title="<?= htmlentities($this->BtnDelete)?>"><i class="fa fa-remove"></i></a>
             </div>

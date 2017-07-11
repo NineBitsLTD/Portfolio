@@ -3,6 +3,9 @@
 namespace DataBase;
 
 class SourceProvider implements \Core\SourceProvider{    
+    public $ErrorList=[
+        1,2,3,4,5,6,7
+    ];
     public static function CreateSource($name, $params, $db=null) {
         if(!($db instanceof \DataBase\Provider)) $db = \Registry::$DB->GetProvider();
     }
@@ -187,7 +190,7 @@ class SourceProvider implements \Core\SourceProvider{
      * @return boolean
      */
     public function ExistsField($name, $searchName='name'){
-        $val = \Helper::$Array->FindByField($this->GetFields(), $name, $searchName);
+        $val = \Helper\Arr::FindByField($this->GetFields(), $name, $searchName);
         return (isset($val)===true);
     }
     /**
@@ -280,7 +283,7 @@ class SourceProvider implements \Core\SourceProvider{
         if($debug) print_r($params);
         $id = "";
         $where = $this->ValueWhere;
-        if(is_array($params) && !\Helper::$Array->KeyIsSet($nameId, $params) && $this->Where("`{$nameId}`={$this->Escape($params[$nameId])}")->GetTotal()>0){
+        if(is_array($params) && array_key_exists($nameId, $params) && $this->Where("`{$nameId}`={$this->Escape($params[$nameId])}")->GetTotal()>0){
             $this->ValueWhere = $where;
             $fields = $this->GetFields();
             $sep="";
@@ -331,19 +334,14 @@ class SourceProvider implements \Core\SourceProvider{
                 print_r([$this->ValueWhere, $this->ValueSort, $this->ValueRelationshipList, $this->ValueLimit, $this->ValueOffset, $this->Sql]);
                 exit();
             }
-            $this->Provider->Query($sql);
+            $this->Provider->Query($this->Sql);
             $this->Id = $this->Provider->GetLastId();
-            foreach($fields as $field) 
-            if($field['name']!=$nameId && array_key_exists($field['name'], $params) && 
-                $this->IsMultiLng() && in_array($field['name'], $this->LngColumns)){
-                $this->TranslateSave($field['name'], $this->Id, $params[$field['name']]);
-            }
         }
         if(isset(\Registry::$Session)){
             if((int)$id!="") {
-                \Registry::$Data['msg']['success'] = $this->ErrorList[0];
+                \Registry::$Session->Data['msg']['success'] = $this->ErrorList[0];
             } else {
-                \Registry::$Data['msg']['error'] = $this->ErrorList[1];
+                \Registry::$Session->Data['msg']['error'] = $this->ErrorList[1];
             }
         }
         return $this;
@@ -356,25 +354,14 @@ class SourceProvider implements \Core\SourceProvider{
      * @return \Core\SourceProvider
      */
     public function Delete($ids=[], $nameId='id', $debug=false){
-        if(!\Helper::$Array->KeyIsSet('msg', \Registry::$Data)) \Registry::$Data['msg']=[];
         if(is_array($ids)){
             foreach ($ids as $id) if((string)$id!=''){
-                $this->Where("`{$nameId}`='{$this->Escape($id)}'");
-            }
-            if(!$this->ValueWhere=='') {\Registry::$Data['msg']=['error' => $this->ErrorList[4]]; return $this;}
-            else \Registry::$Data['msg']=['success' => $this->ErrorList[2]];
-        } else if((string)$ids!='') {
-            $this->Where("`{$nameId}`='{$this->Escape($ids)}'");
-            if($this->Where($where)=='') {\Registry::$Data['msg']=['error' => $this->ErrorList[4]]; return $this;}
-            else \Registry::$Data['msg']=['success' => $this->ErrorList[3]];
-        } else if($this->Where($where)=='') { \Registry::$Data['msg']=['error' => $this->ErrorList[4]]; return $this;}
-        else \Registry::$Data['msg']=['success' => $this->ErrorList[3]];
-        $this->Sql = "DELETE FROM `".$this->GetName()."`".$this->ValueWhere;
-        if($debug) { 
-            print_r([$this->ValueWhere, $this->ValueSort, $this->ValueRelationshipList, $this->ValueLimit, $this->ValueOffset, $this->Sql]);
-            exit();
+                $this->Delete((string)$id);
+            }            
+        } else if($ids!=''){
+            $this->Sql="delete from `{$this->Provider->DBName}`.`".$this->GetName()."` where `id`=".$ids;
+            $this->Provider->Query($this->Sql);
         }
-        $this->Provider->Query($this->Sql);
         return $this;
     }
     /**

@@ -46,7 +46,8 @@ class HTML{
             <?php foreach ($menu as $key => $item) if(is_array($item) && 
                 (array_key_exists('icon',$item) || array_key_exists('text',$item)) && 
                 ($key!='logout' || \Registry::$Session->IsLogged()) && 
-                ($key!='login' || !\Registry::$Session->IsLogged())) { ?>
+                ($key!='login' || !\Registry::$Session->IsLogged()) &&
+                ($key!='api')) { ?>
             <li<?=self::PrintAttributes(['class','title'], $item)?> data-key="item-<?=$key?>">
                 <a class="nav-link"<?=self::PrintAttributes(['href'], $item)?>>
                     <?php if(array_key_exists('icon', $item)){ ?>
@@ -60,4 +61,22 @@ class HTML{
             <?php } ?>
         </ul>
     <?php }
+    /**
+     * Кодирование данных для SQL запросов
+     *  
+     * @param mixed $data Данные в чистом виде
+     * @return mixed Закодированные для SQL запросов
+     */
+    static public function EncodeSql($data){
+        $result;
+        if (is_array($data)) {
+            foreach ($data as $key => $value) {
+                unset($data[$key]);
+                $result[$this->EncodeSql($key)] = $this->EncodeSql($value);
+            }
+        } else {
+            $result = str_replace(array("\\", "\0", "\n", "\r", "\x1a", "'", '"'), array("\\\\", "\\0", "\\n", "\\r", "\Z", "\'", '\"'), $data);
+        }
+        return $result;
+    }
 }
