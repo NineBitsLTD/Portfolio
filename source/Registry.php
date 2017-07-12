@@ -33,7 +33,10 @@ namespace {
         public static function Dispatch(){
             new \Core\Router();
         }
-
+        public static function Trans($key, $to='ru', $from='en'){
+            if(class_exists("\Google\Translator")) return \Google\Translator::Get($from, $to, $key);
+            else return $key;
+        }
     }
 }
 

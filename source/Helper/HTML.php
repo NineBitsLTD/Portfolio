@@ -9,9 +9,10 @@ class HTML{
      * @param array $requirement Перечень имен требуемых атрибутов
      * @param array $attributes Асоциативный масив атрибутов, где ключ - название, а значение - содержание атрибута
      */
-    static public function PrintAttributes(array $requirement, array $attributes){
+    static public function PrintAttributes(array $requirement, array $attributes, $lng_from='en', $lng_to='ru'){
         foreach ($attributes as $key => $attribute) if(in_array($key, $requirement)){
             if($key=='src' || $key=='href') echo " {$key}=\"".\Registry::$Data->BaseLink.$attribute."\"";
+            else if($key=='title') echo "  {$key}=\"". htmlentities(\Registry::Trans($attribute)).'"';
             else echo " {$key}=\"{$attribute}\"";
         }
     }
@@ -41,14 +42,14 @@ class HTML{
      * 
      * @param array $menu Многомерный асрциативный массив - перечень пунктов меню
      */
-    static public function PrintMenu(array $menu){ ?>
+    static public function PrintMenu(array $menu, $lng_from='en', $lng_to='ru'){ ?>
         <ul class="navbar-nav mr-auto">
             <?php foreach ($menu as $key => $item) if(is_array($item) && 
                 (array_key_exists('icon',$item) || array_key_exists('text',$item)) && 
                 ($key!='logout' || \Registry::$Session->IsLogged()) && 
                 ($key!='login' || !\Registry::$Session->IsLogged()) &&
                 ($key!='api')) { ?>
-            <li<?=self::PrintAttributes(['class','title'], $item)?> data-key="item-<?=$key?>">
+            <li<?=self::PrintAttributes(['class','title'], $item, $lng_from, $lng_to)?> data-key="item-<?=$key?>">
                 <a class="nav-link"<?=self::PrintAttributes(['href'], $item)?>>
                     <?php if(array_key_exists('icon', $item)){ ?>
                     <i class="fa <?=$item['icon']?>"></i>
@@ -79,4 +80,5 @@ class HTML{
         }
         return $result;
     }
+    //json_encode($value, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)
 }
