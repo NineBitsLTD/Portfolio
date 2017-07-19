@@ -48,7 +48,8 @@ class HTML{
                 (array_key_exists('icon',$item) || array_key_exists('text',$item)) && 
                 ($key!='logout' || \Registry::$Session->IsLogged()) && 
                 ($key!='login' || !\Registry::$Session->IsLogged()) &&
-                ($key!='api')) { ?>
+                ($key!='api') &&
+                ($key!='export' || \Registry::$Session->IsLogged())) { ?>
             <li<?=self::PrintAttributes(['class','title'], $item, $lng_from, $lng_to)?> data-key="item-<?=$key?>">
                 <a class="nav-link"<?=self::PrintAttributes(['href'], $item)?>>
                     <?php if(array_key_exists('icon', $item)){ ?>
