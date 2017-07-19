@@ -26,6 +26,9 @@ class Home extends \Core\View {
         </ul>
         <?php } ?>
     </article>
+    <article style="text-align: center; color: #fff;">
+        <a href="<?=\Registry::$Data->BaseLink?>payment" class="btn btn-success btn-lg">Donate</a>
+    </article>
     <article>
         <h3>License:</h3>
         <div class="form-control" style="overflow: auto; max-height: 200px;">
