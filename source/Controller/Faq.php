@@ -3,7 +3,6 @@ namespace Controller;
 
 class Faq extends \Core\Controller {
     public function getIndex() {
-        if(\Registry::$Data->Msg!='') print_r(\Registry::$Data->Msg);
         $view = new \View\Base();
         $view->Content = new \View\Faq();
         $modelFaq = new \Model\Faq();

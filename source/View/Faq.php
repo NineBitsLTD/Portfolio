@@ -6,6 +6,8 @@ class Faq extends \Core\View {
     public $Offset=0;
     public $Limit=0;
     
+    public $TextMessageAnswerSuccess = 'Answer success send.';
+    
     public $BtnAnswer='Answer';
     public $BtnEdit='Edit';
     public $BtnDelete='Delete';
@@ -13,7 +15,13 @@ class Faq extends \Core\View {
     public function printContent() {
     ?>
     <h1>FAQ</h1>
-    <hr>
+    <hr>    
+    <?php if(\Registry::$Data->Msg!=''){ ?>
+        <?php if(\Registry::$Data->Msg===true){ ?>
+            <div class="alert alert-success"><?=$this->TextMessageAnswerSuccess?></div>
+        <?php } else { ?>
+            <div class="alert alert-warning"><?=print_r(\Registry::$Data->Msg)?></div>
+    <?php } } ?>
     <article class="">
         <h3>List of questions and answers:</h3>
     <?php foreach ($this->List as $value) { ?>
