@@ -19,6 +19,7 @@ while ($zip_entry = zip_read($zip)) {
     $size = zip_entry_filesize($zip_entry);
     if($opened = zip_entry_open($zip, $zip_entry)){
         $content = zip_entry_read($zip_entry, $size);
+        var_dump($content);
         zip_entry_close($zip_entry);
     }
     var_dump([$name,$size,$opened]);

@@ -24,7 +24,7 @@ class Login extends \Core\View {
             </div>
             <div class="form-group">
                 <label class="control-label"><?= $this->TextPassword?></label>
-                <input class="form-control" name="password">
+                <input type = "password" class="form-control" name="password">
             </div>
             <input type="submit" value="<?= htmlentities($this->BtnEnter)?>">
         </form>

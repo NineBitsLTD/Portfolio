@@ -3,7 +3,6 @@
 namespace Helper;
 
 class File{
-    
     public static function GetConditionalContents($url, $params="", $cookie=null){
         // http://php.net/manual/ru/function.curl-setopt.php
         $ch = curl_init();

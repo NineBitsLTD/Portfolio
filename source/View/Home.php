@@ -4,9 +4,12 @@ namespace View;
 class Home extends \Core\View {
     public $Components=[];
     
+    public $TextWelcome='Welcome';
+
+
     public function printContent() {
     ?>
-    <h1>Welcome
+    <h1><?=\Registry::Trans($this->TextWelcome)?>
         <?php if(\Registry::$Session->IsLogged()) { ?>
         <span class="text-primary"><?= \Registry::$Session->User->Data['firstname']?> <?= \Registry::$Session->User->Data['lastname']?></span>
         <?php } ?>!

@@ -55,7 +55,7 @@ class HTML{
                     <i class="fa <?=$item['icon']?>"></i>
                     <?php } ?>
                     <?php if(array_key_exists('text', $item)){ ?>
-                    <span><?=$item['text']?></span>
+                    <span><?= \Registry::Trans($item['text'])?></span>
                     <?php } ?>
                 </a>
             </li>

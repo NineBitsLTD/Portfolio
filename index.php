@@ -20,8 +20,11 @@ if(!isset($root)) $root = "";
 
 
 require_once('source/Core/Autoloader.php');
+require_once('vendor/PHPMailer/PHPMailerAutoload.php');
 
 \Registry::$Autoloader = new \Core\Autoloader([''=>'source/'], "source/Extensions");
+\Registry::$UseTranslator = false;
+\Registry::$Mail = new \Config\Mailer();
 \Registry::$DB = new \DataBase\MySql(new \Config\DataBase());
 \Registry::$DB->Connect();
 \Registry::$Session = new \Core\Session();

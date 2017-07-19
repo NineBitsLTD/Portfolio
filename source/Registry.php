@@ -2,6 +2,7 @@
 
 namespace {
     class Registry{
+        public static $UseTranslator = true;
         /**
          * Autoload classes
          * 
@@ -28,13 +29,18 @@ namespace {
          */
         public static $Session;
         /**
+         *
+         * @var \Config\Mailer
+         */
+        public static $Mail;
+        /**
          * 
          */
         public static function Dispatch(){
             new \Core\Router();
         }
         public static function Trans($key, $to='ru', $from='en'){
-            if(class_exists("\Google\Translator")) return \Google\Translator::Get($from, $to, $key);
+            if(class_exists("\Google\Translator") && self::$UseTranslator) return \Google\Translator::Get($from, $to, $key);
             else return $key;
         }
     }
@@ -47,5 +53,6 @@ namespace Registry {
         public $Components=[];
         public $Menu=[];
         public $Page='NotFound';
+        public $Msg='';
     }
 }

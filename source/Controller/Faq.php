@@ -3,6 +3,7 @@ namespace Controller;
 
 class Faq extends \Core\Controller {
     public function getIndex() {
+        if(\Registry::$Data->Msg!='') print_r(\Registry::$Data->Msg);
         $view = new \View\Base();
         $view->Content = new \View\Faq();
         $modelFaq = new \Model\Faq();
@@ -70,6 +71,18 @@ class Faq extends \Core\Controller {
             if(array_key_exists('id', $_POST['item'])) $_POST['item']['id']=(int)$_POST['item']['id'];
             if(array_key_exists('parent_id', $_POST['item'])) $_POST['item']['parent_id']=(int)$_POST['item']['parent_id'];
             $modelFaq->Set($_POST['item']);
+            
+            if(array_key_exists('parent_id', $_POST['item'])){
+                $q = $modelFaq->Clear()->GetById($_POST['item']['parent_id'])->GetResult()->Row;
+                if(isset($q['email'])){             
+                    \Registry::$Data->Msg = \Registry::$Mail->Send(
+                        $q['email'], 
+                        $q['firstname'], 
+                        "Answer for question №{$_POST['item']['parent_id']} from ". \Registry::$Data->BaseLink, 
+                        $_POST['item']['message']
+                    );
+                }
+            }
         }
         $this->getIndex();
     }
